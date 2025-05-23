@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35931.197 d17.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChallengeMuttuApi", "ChallengeMuttuApi\ChallengeMuttuApi.csproj", "{4C1CADCD-8312-4FEC-BF17-F7BD3CA5785B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4C1CADCD-8312-4FEC-BF17-F7BD3CA5785B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C1CADCD-8312-4FEC-BF17-F7BD3CA5785B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C1CADCD-8312-4FEC-BF17-F7BD3CA5785B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C1CADCD-8312-4FEC-BF17-F7BD3CA5785B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {95EE4796-7A19-4204-B23E-75B8E992E1FA}
+	EndGlobalSection
+EndGlobal

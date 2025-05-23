@@ -1,0 +1,939 @@
+{
+    "info": {
+      "name": "ChallengeMuttuApi Test Collection",
+      "_postman_id": "YOUR_COLLECTION_ID",
+      "description": "A collection to test the ChallengeMuttuApi endpoints. Remember to set the {{baseUrl}} environment variable.",
+      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+      {
+        "name": "BoxesController",
+        "description": "Endpoints for managing Boxes. [cite: 17]",
+        "item": [
+          {
+            "name": "GetAllBoxes",
+            "request": {
+              "method": "GET",
+              "header": [],
+              "url": {
+                "raw": "{{baseUrl}}/api/Boxes",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "Boxes"]
+              },
+              "description": "Retorna uma lista de todos os boxes cadastrados. [cite: 22]"
+            },
+            "response": []
+          },
+          {
+            "name": "GetBoxById",
+            "request": {
+              "method": "GET",
+              "header": [],
+              "url": {
+                "raw": "{{baseUrl}}/api/Boxes/1",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "Boxes", "1"]
+              },
+              "description": "Retorna um box específico pelo seu ID. Update ID '1' as needed. [cite: 29]"
+            },
+            "response": []
+          },
+          {
+            "name": "SearchBoxesByName",
+            "request": {
+              "method": "GET",
+              "header": [],
+              "url": {
+                "raw": "{{baseUrl}}/api/Boxes/search-by-name?nome=Central",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "Boxes", "search-by-name"],
+                "query": [
+                  {
+                    "key": "nome",
+                    "value": "Central"
+                  }
+                ]
+              },
+              "description": "Pesquisa boxes por parte do nome. [cite: 36]"
+            },
+            "response": []
+          },
+          {
+            "name": "GetBoxesByStatus (Active)",
+            "request": {
+              "method": "GET",
+              "header": [],
+              "url": {
+                "raw": "{{baseUrl}}/api/Boxes/by-status/A",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "Boxes", "by-status", "A"]
+              },
+              "description": "Retorna boxes com base em seu status ('A' para Ativo). [cite: 45]"
+            },
+            "response": []
+          },
+          {
+            "name": "GetBoxesByStatus (Inactive)",
+            "request": {
+              "method": "GET",
+              "header": [],
+              "url": {
+                "raw": "{{baseUrl}}/api/Boxes/by-status/I",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "Boxes", "by-status", "I"]
+              },
+              "description": "Retorna boxes com base em seu status ('I' para Inativo). [cite: 45]"
+            },
+            "response": []
+          },
+          {
+            "name": "CreateBox",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"nome\": \"Box Alpha\",\n  \"status\": true,\n  \"dataEntrada\": \"2025-05-22T10:00:00Z\",\n  \"dataSaida\": \"2025-06-22T10:00:00Z\",\n  \"observacao\": \"Box de teste inicial\"\n}"
+              },
+              "url": {
+                "raw": "{{baseUrl}}/api/Boxes",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "Boxes"]
+              },
+              "description": "Cria um novo box. `status: true` for 'A', `false` for 'I'. [cite: 59, 644, 646]"
+            },
+            "response": []
+          },
+          {
+            "name": "UpdateBox",
+            "request": {
+              "method": "PUT",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"idBox\": 1,\n  \"nome\": \"Box Alpha Atualizado\",\n  \"status\": false,\n  \"dataEntrada\": \"2025-05-23T10:00:00Z\",\n  \"dataSaida\": \"2025-06-25T10:00:00Z\",\n  \"observacao\": \"Box atualizado via API\"\n}"
+              },
+              "url": {
+                "raw": "{{baseUrl}}/api/Boxes/1",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "Boxes", "1"]
+              },
+              "description": "Atualiza um box existente pelo ID. Ensure `idBox` in body matches ID in URL. Update ID '1' as needed. [cite: 68]"
+            },
+            "response": []
+          },
+          {
+            "name": "DeleteBox",
+            "request": {
+              "method": "DELETE",
+              "header": [],
+              "url": {
+                "raw": "{{baseUrl}}/api/Boxes/1",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "Boxes", "1"]
+              },
+              "description": "Exclui um box pelo ID. Update ID '1' as needed. [cite: 80]"
+            },
+            "response": []
+          }
+        ]
+      },
+      {
+        "name": "ClientesController",
+        "description": "Endpoints for managing Clientes. [cite: 88]",
+        "item": [
+          {
+            "name": "GetAllClientes",
+            "request": {
+              "method": "GET",
+              "header": [],
+              "url": {
+                "raw": "{{baseUrl}}/api/Clientes",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "Clientes"]
+              },
+              "description": "Retorna uma lista de todos os clientes cadastrados. [cite: 94]"
+            },
+            "response": []
+          },
+          {
+            "name": "GetClienteById",
+            "request": {
+              "method": "GET",
+              "header": [],
+              "url": {
+                "raw": "{{baseUrl}}/api/Clientes/1",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "Clientes", "1"]
+              },
+              "description": "Retorna um cliente específico pelo seu ID. Update ID '1' as needed. [cite: 101]"
+            },
+            "response": []
+          },
+          {
+            "name": "GetClienteByCpf",
+            "request": {
+              "method": "GET",
+              "header": [],
+              "url": {
+                "raw": "{{baseUrl}}/api/Clientes/by-cpf/12345678901",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "Clientes", "by-cpf", "12345678901"]
+              },
+              "description": "Retorna um cliente específico pelo seu CPF. Use a valid 11-digit CPF. [cite: 108, 691]"
+            },
+            "response": []
+          },
+          {
+            "name": "SearchClientesByName",
+            "request": {
+              "method": "GET",
+              "header": [],
+              "url": {
+                "raw": "{{baseUrl}}/api/Clientes/search-by-name?nome=Joao",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "Clientes", "search-by-name"],
+                "query": [
+                  {
+                    "key": "nome",
+                    "value": "Joao"
+                  }
+                ]
+              },
+              "description": "Pesquisa clientes por parte do nome. [cite: 115]"
+            },
+            "response": []
+          },
+          {
+            "name": "CreateCliente",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"sexo\": \"M\",\n  \"nome\": \"Joao\",\n  \"sobrenome\": \"Silva\",\n  \"dataNascimento\": \"1990-01-15T00:00:00Z\",\n  \"cpf\": \"11122233344\",\n  \"profissao\": \"Engenheiro\",\n  \"estadoCivil\": \"Casado\",\n  \"tbEnderecoIdEndereco\": 1,\n  \"tbContatoIdContato\": 1,\n  \"dataCadastro\": \"2025-05-22T12:00:00Z\"\n}"
+              },
+              "url": {
+                "raw": "{{baseUrl}}/api/Clientes",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "Clientes"]
+              },
+              "description": "Cria um novo cliente. CPF must be unique. [cite: 124, 1130] Assumes Endereco ID 1 and Contato ID 1 exist. [cite: 701, 703] EstadoCivil from Enum. [cite: 626, 628] Sexo: 'M', 'F', or 'H'. [cite: 679]"
+            },
+            "response": []
+          },
+          {
+            "name": "UpdateCliente",
+            "request": {
+              "method": "PUT",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"idCliente\": 1,\n  \"sexo\": \"M\",\n  \"nome\": \"Joao Victor\",\n  \"sobrenome\": \"Silva Santos\",\n  \"dataNascimento\": \"1990-01-15T00:00:00Z\",\n  \"cpf\": \"11122233344\",\n  \"profissao\": \"Engenheiro de Software\",\n  \"estadoCivil\": \"Casado\",\n  \"tbEnderecoIdEndereco\": 1,\n  \"tbContatoIdContato\": 1,\n  \"dataCadastro\": \"2025-05-22T12:00:00Z\"\n}"
+              },
+              "url": {
+                "raw": "{{baseUrl}}/api/Clientes/1",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "Clientes", "1"]
+              },
+              "description": "Atualiza um cliente existente. Ensure `idCliente` in body matches ID in URL. CPF should remain unique or be updated to another unique one. Update ID '1' as needed. [cite: 139]"
+            },
+            "response": []
+          },
+          {
+            "name": "DeleteCliente",
+            "request": {
+              "method": "DELETE",
+              "header": [],
+              "url": {
+                "raw": "{{baseUrl}}/api/Clientes/1",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "Clientes", "1"]
+              },
+              "description": "Exclui um cliente pelo ID. Update ID '1' as needed. [cite: 155]"
+            },
+            "response": []
+          }
+        ]
+      },
+      {
+        "name": "ContatosController",
+        "description": "Endpoints for managing Contatos. [cite: 163]",
+        "item": [
+          {
+            "name": "GetAllContatos",
+            "request": {
+              "method": "GET",
+              "header": [],
+              "url": {
+                "raw": "{{baseUrl}}/api/Contatos",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "Contatos"]
+              },
+              "description": "Retorna uma lista de todos os contatos. [cite: 168]"
+            },
+            "response": []
+          },
+          {
+            "name": "GetContatoById",
+            "request": {
+              "method": "GET",
+              "header": [],
+              "url": {
+                "raw": "{{baseUrl}}/api/Contatos/1",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "Contatos", "1"]
+              },
+              "description": "Retorna um contato pelo ID. Update ID '1' as needed. [cite: 174]"
+            },
+            "response": []
+          },
+          {
+            "name": "GetContatoByEmail",
+            "request": {
+              "method": "GET",
+              "header": [],
+              "url": {
+                "raw": "{{baseUrl}}/api/Contatos/by-email/teste@example.com",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "Contatos", "by-email", "teste@example.com"]
+              },
+              "description": "Retorna um contato pelo e-mail. [cite: 180]"
+            },
+            "response": []
+          },
+          {
+            "name": "SearchContatosByCelular",
+            "request": {
+              "method": "GET",
+              "header": [],
+              "url": {
+                "raw": "{{baseUrl}}/api/Contatos/search-by-celular?celular=999998888",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "Contatos", "search-by-celular"],
+                "query": [
+                  {
+                    "key": "celular",
+                    "value": "999998888"
+                  }
+                ]
+              },
+              "description": "Pesquisa contatos por parte do número de celular. [cite: 188]"
+            },
+            "response": []
+          },
+          {
+            "name": "CreateContato",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"email\": \"contato_novo@example.com\",\n  \"ddd\": 11,\n  \"ddi\": 55,\n  \"telefone1\": \"1122334455\",\n  \"telefone2\": \"\",\n  \"telefone3\": \"\",\n  \"celular\": \"11988776655\",\n  \"outro\": \"Skype: contato.novo\",\n  \"observacao\": \"Contato principal para testes\"\n}"
+              },
+              "url": {
+                "raw": "{{baseUrl}}/api/Contatos",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "Contatos"]
+              },
+              "description": "Cria um novo contato. Email should be unique if enforced. [cite: 196] DDD range 11-99. [cite: 1139]"
+            },
+            "response": []
+          },
+          {
+            "name": "UpdateContato",
+            "request": {
+              "method": "PUT",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"idContato\": 1,\n  \"email\": \"contato_atualizado@example.com\",\n  \"ddd\": 21,\n  \"ddi\": 55,\n  \"telefone1\": \"2122334455\",\n  \"telefone2\": \"2133445566\",\n  \"telefone3\": \"\",\n  \"celular\": \"21988776650\",\n  \"outro\": \"Skype: contato.atualizado\",\n  \"observacao\": \"Contato atualizado com novas informações\"\n}"
+              },
+              "url": {
+                "raw": "{{baseUrl}}/api/Contatos/1",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "Contatos", "1"]
+              },
+              "description": "Atualiza um contato existente. Ensure `idContato` matches ID in URL. Update ID '1' as needed. [cite: 206]"
+            },
+            "response": []
+          },
+          {
+            "name": "DeleteContato",
+            "request": {
+              "method": "DELETE",
+              "header": [],
+              "url": {
+                "raw": "{{baseUrl}}/api/Contatos/1",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "Contatos", "1"]
+              },
+              "description": "Exclui um contato pelo ID. Update ID '1' as needed. [cite: 220]"
+            },
+            "response": []
+          }
+        ]
+      },
+      {
+        "name": "EnderecosController",
+        "description": "Endpoints for managing Enderecos. [cite: 227]",
+        "item": [
+          {
+            "name": "GetAllEnderecos",
+            "request": {
+              "method": "GET",
+              "header": [],
+              "url": {
+                "raw": "{{baseUrl}}/api/Enderecos",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "Enderecos"]
+              },
+              "description": "Retorna uma lista de todos os endereços. [cite: 232]"
+            },
+            "response": []
+          },
+          {
+            "name": "GetEnderecoById",
+            "request": {
+              "method": "GET",
+              "header": [],
+              "url": {
+                "raw": "{{baseUrl}}/api/Enderecos/1",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "Enderecos", "1"]
+              },
+              "description": "Retorna um endereço pelo ID. Update ID '1' as needed. [cite: 238]"
+            },
+            "response": []
+          },
+          {
+            "name": "GetEnderecosByCep",
+            "request": {
+              "method": "GET",
+              "header": [],
+              "url": {
+                "raw": "{{baseUrl}}/api/Enderecos/by-cep/01001000",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "Enderecos", "by-cep", "01001000"]
+              },
+              "description": "Retorna endereços por CEP. CEP format with 8 digits or 9 with hyphen (model expects 9 chars). [cite: 244, 796]"
+            },
+            "response": []
+          },
+          {
+            "name": "SearchEnderecosByLocation",
+            "request": {
+              "method": "GET",
+              "header": [],
+              "url": {
+                "raw": "{{baseUrl}}/api/Enderecos/search-by-location?cidade=Sao%20Paulo&estado=SP",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "Enderecos", "search-by-location"],
+                "query": [
+                  {
+                    "key": "cidade",
+                    "value": "Sao Paulo"
+                  },
+                  {
+                    "key": "estado",
+                    "value": "SP"
+                  }
+                ]
+              },
+              "description": "Pesquisa endereços por cidade e estado. [cite: 252]"
+            },
+            "response": []
+          },
+          {
+            "name": "CreateEndereco",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"cep\": \"01001001\",\n  \"numero\": 100,\n  \"logradouro\": \"Praca da Se\",\n  \"bairro\": \"Se\",\n  \"cidade\": \"Sao Paulo\",\n  \"estado\": \"SP\",\n  \"pais\": \"Brasil\",\n  \"complemento\": \"Lado impar\",\n  \"observacao\": \"Endereco de referencia\"\n}"
+              },
+              "url": {
+                "raw": "{{baseUrl}}/api/Enderecos",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "Enderecos"]
+              },
+              "description": "Cria um novo endereço. [cite: 262]"
+            },
+            "response": []
+          },
+          {
+            "name": "UpdateEndereco",
+            "request": {
+              "method": "PUT",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"idEndereco\": 1,\n  \"cep\": \"01001002\",\n  \"numero\": 150,\n  \"logradouro\": \"Praca da Se Atualizada\",\n  \"bairro\": \"Centro Historico\",\n  \"cidade\": \"Sao Paulo\",\n  \"estado\": \"SP\",\n  \"pais\": \"Brasil\",\n  \"complemento\": \"Proximo ao Metro\",\n  \"observacao\": \"Endereco atualizado\"\n}"
+              },
+              "url": {
+                "raw": "{{baseUrl}}/api/Enderecos/1",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "Enderecos", "1"]
+              },
+              "description": "Atualiza um endereço existente. Ensure `idEndereco` matches ID in URL. Update ID '1' as needed. [cite: 270]"
+            },
+            "response": []
+          },
+          {
+            "name": "DeleteEndereco",
+            "request": {
+              "method": "DELETE",
+              "header": [],
+              "url": {
+                "raw": "{{baseUrl}}/api/Enderecos/1",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "Enderecos", "1"]
+              },
+              "description": "Exclui um endereço pelo ID. Update ID '1' as needed. [cite: 281]"
+            },
+            "response": []
+          }
+        ]
+      },
+      {
+        "name": "PatiosController",
+        "description": "Endpoints for managing Patios. [cite: 288]",
+        "item": [
+          {
+            "name": "GetAllPatios",
+            "request": {
+              "method": "GET",
+              "url": "{{baseUrl}}/api/Patios",
+              "description": "Retorna uma lista de todos os pátios. [cite: 293]"
+            },
+            "response": []
+          },
+          {
+            "name": "GetPatioById",
+            "request": {
+              "method": "GET",
+              "url": "{{baseUrl}}/api/Patios/1",
+              "description": "Retorna um pátio pelo ID. Update ID '1' as needed. [cite: 299]"
+            },
+            "response": []
+          },
+          {
+            "name": "SearchPatiosByName",
+            "request": {
+              "method": "GET",
+              "url": {
+                "raw": "{{baseUrl}}/api/Patios/search-by-name?nomePatio=Principal",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "Patios", "search-by-name"],
+                "query": [{"key": "nomePatio", "value": "Principal"}]
+              },
+              "description": "Pesquisa pátios por parte do nome. [cite: 305]"
+            },
+            "response": []
+          },
+          {
+            "name": "GetPatiosByDate (Entrada)",
+            "request": {
+              "method": "GET",
+              "url": {
+                "raw": "{{baseUrl}}/api/Patios/by-date?date=2025-05-20&type=entrada",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "Patios", "by-date"],
+                "query": [
+                  {"key": "date", "value": "2025-05-20"},
+                  {"key": "type", "value": "entrada"}
+                ]
+              },
+              "description": "Retorna pátios por data de entrada. [cite: 313]"
+            },
+            "response": []
+          },
+          {
+            "name": "CreatePatio",
+            "request": {
+              "method": "POST",
+              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"nomePatio\": \"Patio A1\",\n  \"dataEntrada\": \"2025-05-01T08:00:00Z\",\n  \"dataSaida\": \"2025-05-30T18:00:00Z\",\n  \"observacao\": \"Patio de carga\"\n}"
+              },
+              "url": "{{baseUrl}}/api/Patios",
+              "description": "Cria um novo pátio. [cite: 323]"
+            },
+            "response": []
+          },
+          {
+            "name": "UpdatePatio",
+            "request": {
+              "method": "PUT",
+              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"idPatio\": 1,\n  \"nomePatio\": \"Patio A1 Modificado\",\n  \"dataEntrada\": \"2025-05-02T08:00:00Z\",\n  \"dataSaida\": \"2025-06-01T18:00:00Z\",\n  \"observacao\": \"Patio de carga atualizado\"\n}"
+              },
+              "url": "{{baseUrl}}/api/Patios/1",
+              "description": "Atualiza um pátio. Ensure `idPatio` matches URL. Update ID '1'. [cite: 331]"
+            },
+            "response": []
+          },
+          {
+            "name": "DeletePatio",
+            "request": {
+              "method": "DELETE",
+              "url": "{{baseUrl}}/api/Patios/1",
+              "description": "Exclui um pátio. Update ID '1'. [cite: 342]"
+            },
+            "response": []
+          }
+        ]
+      },
+      {
+        "name": "RastreamentosController",
+        "description": "Endpoints for managing Rastreamentos. [cite: 349]",
+        "item": [
+          {
+            "name": "GetAllRastreamentos",
+            "request": {
+              "method": "GET",
+              "url": "{{baseUrl}}/api/Rastreamentos",
+              "description": "Retorna todos os rastreamentos. [cite: 354]"
+            },
+            "response": []
+          },
+          {
+            "name": "GetRastreamentoById",
+            "request": {
+              "method": "GET",
+              "url": "{{baseUrl}}/api/Rastreamentos/1",
+              "description": "Retorna rastreamento por ID. Update ID '1'. [cite: 360]"
+            },
+            "response": []
+          },
+          {
+            "name": "SearchRastreamentosByCoordinates",
+            "request": {
+              "method": "GET",
+              "url": {
+                "raw": "{{baseUrl}}/api/Rastreamentos/search-by-coordinates?minLat=-23.55&maxLat=-23.54&minLong=-46.64&maxLong=-46.63",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "Rastreamentos", "search-by-coordinates"],
+                "query": [
+                  {"key": "minLat", "value": "-23.55"},
+                  {"key": "maxLat", "value": "-23.54"},
+                  {"key": "minLong", "value": "-46.64"},
+                  {"key": "maxLong", "value": "-46.63"}
+                ]
+              },
+              "description": "Pesquisa rastreamentos por coordenadas GPRS. [cite: 366]"
+            },
+            "response": []
+          },
+          {
+            "name": "GetRastreamentosByIpsRange",
+            "request": {
+              "method": "GET",
+              "url": {
+                "raw": "{{baseUrl}}/api/Rastreamentos/by-ips-range?minX=10.0&maxX=20.0&minY=5.0&maxY=15.0",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "Rastreamentos", "by-ips-range"],
+                "query": [
+                  {"key": "minX", "value": "10.0"},
+                  {"key": "maxX", "value": "20.0"},
+                  {"key": "minY", "value": "5.0"},
+                  {"key": "maxY", "value": "15.0"}
+                ]
+              },
+              "description": "Retorna rastreamentos por range IPS. [cite: 377]"
+            },
+            "response": []
+          },
+          {
+            "name": "CreateRastreamento",
+            "request": {
+              "method": "POST",
+              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"ipsX\": 12.345,\n  \"ipsY\": 67.890,\n  \"ipsZ\": 1.230,\n  \"gprsLatitude\": -23.5489,\n  \"gprsLongitude\": -46.6388,\n  \"gprsAltitude\": 760.50\n}"
+              },
+              "url": "{{baseUrl}}/api/Rastreamentos",
+              "description": "Cria um novo rastreamento. [cite: 388] Note DDL precision for numbers. [cite: 1102]"
+            },
+            "response": []
+          },
+          {
+            "name": "UpdateRastreamento",
+            "request": {
+              "method": "PUT",
+              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"idRastreamento\": 1,\n  \"ipsX\": 15.123,\n  \"ipsY\": 70.456,\n  \"ipsZ\": 2.500,\n  \"gprsLatitude\": -23.5500,\n  \"gprsLongitude\": -46.6300,\n  \"gprsAltitude\": 765.00\n}"
+              },
+              "url": "{{baseUrl}}/api/Rastreamentos/1",
+              "description": "Atualiza um rastreamento. Ensure `idRastreamento` matches URL. Update ID '1'. [cite: 396]"
+            },
+            "response": []
+          },
+          {
+            "name": "DeleteRastreamento",
+            "request": {
+              "method": "DELETE",
+              "url": "{{baseUrl}}/api/Rastreamentos/1",
+              "description": "Exclui um rastreamento. Update ID '1'. [cite: 407]"
+            },
+            "response": []
+          }
+        ]
+      },
+      {
+        "name": "VeiculosController",
+        "description": "Endpoints for managing Veiculos. [cite: 414]",
+        "item": [
+          {
+            "name": "GetAllVeiculos",
+            "request": {
+              "method": "GET",
+              "url": "{{baseUrl}}/api/Veiculos",
+              "description": "Retorna todos os veículos. [cite: 419]"
+            },
+            "response": []
+          },
+          {
+            "name": "GetVeiculoById",
+            "request": {
+              "method": "GET",
+              "url": "{{baseUrl}}/api/Veiculos/1",
+              "description": "Retorna veículo por ID. Update ID '1'. [cite: 425]"
+            },
+            "response": []
+          },
+          {
+            "name": "GetVeiculoByPlaca",
+            "request": {
+              "method": "GET",
+              "url": "{{baseUrl}}/api/Veiculos/by-placa/BRA2E19",
+              "description": "Retorna veículo pela placa. [cite: 431]"
+            },
+            "response": []
+          },
+          {
+            "name": "SearchVeiculosByModel",
+            "request": {
+              "method": "GET",
+              "url": {
+                "raw": "{{baseUrl}}/api/Veiculos/search-by-model?modelo=Civic",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "Veiculos", "search-by-model"],
+                "query": [{"key": "modelo", "value": "Civic"}]
+              },
+              "description": "Pesquisa veículos por modelo. [cite: 440]"
+            },
+            "response": []
+          },
+          {
+            "name": "CreateVeiculo",
+            "request": {
+              "method": "POST",
+              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"placa\": \"ABC1D23\",\n  \"renavam\": \"12345678901\",\n  \"chassi\": \"9BWUD02P3F5G6H701\",\n  \"fabricante\": \"Honda\",\n  \"modelo\": \"CG 160 Titan\",\n  \"motor\": \"160cc OHC\",\n  \"ano\": 2024,\n  \"combustivel\": \"Flex\"\n}"
+              },
+              "url": "{{baseUrl}}/api/Veiculos",
+              "description": "Cria um novo veículo. Placa, Renavam, Chassi must be unique. [cite: 449, 1131, 1132]"
+            },
+            "response": []
+          },
+          {
+            "name": "UpdateVeiculo",
+            "request": {
+              "method": "PUT",
+              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"idVeiculo\": 1,\n  \"placa\": \"ABC1D23\",\n  \"renavam\": \"12345678901\",\n  \"chassi\": \"9BWUD02P3F5G6H701\",\n  \"fabricante\": \"Honda\",\n  \"modelo\": \"CG 160 Titan S\",\n  \"motor\": \"162.7cc OHC\",\n  \"ano\": 2025,\n  \"combustivel\": \"Gasolina\"\n}"
+              },
+              "url": "{{baseUrl}}/api/Veiculos/1",
+              "description": "Atualiza um veículo. Ensure `idVeiculo` matches URL. Placa, Renavam, Chassi should remain unique if changed. Update ID '1'. [cite: 458]"
+            },
+            "response": []
+          },
+          {
+            "name": "DeleteVeiculo",
+            "request": {
+              "method": "DELETE",
+              "url": "{{baseUrl}}/api/Veiculos/1",
+              "description": "Exclui um veículo. Update ID '1'. [cite: 472]"
+            },
+            "response": []
+          }
+        ]
+      },
+      {
+        "name": "ZonasController",
+        "description": "Endpoints for managing Zonas. [cite: 483]",
+        "item": [
+          {
+            "name": "GetAllZonas",
+            "request": {
+              "method": "GET",
+              "url": "{{baseUrl}}/api/Zonas",
+              "description": "Retorna todas as zonas. [cite: 488]"
+            },
+            "response": []
+          },
+          {
+            "name": "GetZonaById",
+            "request": {
+              "method": "GET",
+              "url": "{{baseUrl}}/api/Zonas/1",
+              "description": "Retorna zona por ID. Update ID '1'. [cite: 494]"
+            },
+            "response": []
+          },
+          {
+            "name": "SearchZonasByName",
+            "request": {
+              "method": "GET",
+              "url": {
+                "raw": "{{baseUrl}}/api/Zonas/search-by-name?nome=Norte",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "Zonas", "search-by-name"],
+                "query": [{"key": "nome", "value": "Norte"}]
+              },
+              "description": "Pesquisa zonas por nome. [cite: 500]"
+            },
+            "response": []
+          },
+          {
+            "name": "GetZonasByDate (Saida)",
+            "request": {
+              "method": "GET",
+              "url": {
+                "raw": "{{baseUrl}}/api/Zonas/by-date?date=2025-06-01&type=saida",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "Zonas", "by-date"],
+                "query": [
+                  {"key": "date", "value": "2025-06-01"},
+                  {"key": "type", "value": "saida"}
+                ]
+              },
+              "description": "Retorna zonas por data de saída. [cite: 508]"
+            },
+            "response": []
+          },
+          {
+            "name": "CreateZona",
+            "request": {
+              "method": "POST",
+              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"nome\": \"Zona Sul Logistica\",\n  \"dataEntrada\": \"2025-04-10T00:00:00Z\",\n  \"dataSaida\": \"2025-12-31T23:59:59Z\",\n  \"observacao\": \"Zona de alta periculosidade\"\n}"
+              },
+              "url": "{{baseUrl}}/api/Zonas",
+              "description": "Cria uma nova zona. [cite: 518]"
+            },
+            "response": []
+          },
+          {
+            "name": "UpdateZona",
+            "request": {
+              "method": "PUT",
+              "header": [{"key": "Content-Type", "value": "application/json"}],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"idZona\": 1,\n  \"nome\": \"Zona Sul Logistica (Expansao)\",\n  \"dataEntrada\": \"2025-04-10T00:00:00Z\",\n  \"dataSaida\": \"2026-12-31T23:59:59Z\",\n  \"observacao\": \"Zona expandida para novos containers\"\n}"
+              },
+              "url": "{{baseUrl}}/api/Zonas/1",
+              "description": "Atualiza uma zona. Ensure `idZona` matches URL. Update ID '1'. [cite: 526]"
+            },
+            "response": []
+          },
+          {
+            "name": "DeleteZona",
+            "request": {
+              "method": "DELETE",
+              "url": "{{baseUrl}}/api/Zonas/1",
+              "description": "Exclui uma zona. Update ID '1'. [cite: 537]"
+            },
+            "response": []
+          }
+        ]
+      },
+      {
+          "name": "WeatherForecastController",
+          "description": "Endpoints for WeatherForecast. [cite: 478]",
+          "item": [
+              {
+                  "name": "GetWeatherForecast",
+                  "request": {
+                      "method": "GET",
+                      "header": [],
+                      "url": {
+                          "raw": "{{baseUrl}}/WeatherForecast",
+                          "host": [
+                              "{{baseUrl}}"
+                          ],
+                          "path": [
+                              "WeatherForecast"
+                          ]
+                      },
+                      "description": "Gets the weather forecast. [cite: 480]"
+                  },
+                  "response": []
+              }
+          ]
+      }
+    ],
+    "variable": [
+      {
+        "key": "baseUrl",
+        "value": "http://localhost:5181",
+        "type": "string",
+        "description": "The base URL for the API. Update if using HTTPS or a different port (e.g., https://localhost:7183)."
+      }
+    ]
+  }
