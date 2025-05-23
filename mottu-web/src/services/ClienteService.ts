@@ -7,6 +7,7 @@ import type {
     EnderecoResponseDto, // Importando para uso em formatClienteResponse
     ContatoResponseDto   // Importando para uso em formatClienteResponse
 } from '@/types/cliente'; // Ajuste o path se os seus tipos estiverem em outro local
+import type { VeiculoResponseDto } from '@/types/veiculo'; // Importação adicionada
 // Removida a importação de SpringPage, pois o backend não retorna essa estrutura para GetAllClientes
 // import type { SpringPage } from '@/types/common';
 
@@ -101,70 +102,35 @@ export const ClienteService = {
         return response.data.map(formatClienteResponse);
     },
 
-    // Esta função é para a página de busca avançada (ListarClientesPage)
-    // Ela assume que o backend /api/clientes (GET) FOI MODIFICADO
-    // para aceitar os parâmetros de ClienteFilter e paginação (SpringPage).
-    // Se o backend não foi modificado, esta função não funcionará como esperado para filtros/paginação.
-    listarPaginadoFiltrado: async (
-        filters?: ClienteFilter,
-        page: number = 0,
-        size: number = 9,
-        sort: string = 'idCliente,asc'
-    ): Promise<SpringPage<ClienteResponseDto>> => {
-
-        const cleanedFilters: Partial<ClienteFilter> = {};
-        if (filters) {
-            for (const key in filters) {
-                const typedKey = key as keyof ClienteFilter;
-                if (filters[typedKey] !== undefined && filters[typedKey] !== '') {
-                    if (typedKey === 'cpf' || typedKey === 'contatoCelular') {
-                        cleanedFilters[typedKey] = cleanNumericString(filters[typedKey] as string);
-                    } else {
-                        cleanedFilters[typedKey] = filters[typedKey];
-                    }
-                }
+    // Função para listar clientes com base em filtros específicos (CPF ou Nome),
+    // ou buscar todos se nenhum filtro aplicável for fornecido.
+    // Remove a lógica de paginação e ordenação, alinhando-se com os endpoints de backend existentes.
+    listarPaginadoFiltrado: async (filters?: ClienteFilter): Promise<ClienteResponseDto[]> => {
+        if (filters?.cpf) {
+            const cleanedCpf = cleanNumericString(filters.cpf);
+            if (cleanedCpf && cleanedCpf.length === 11) {
+                // ClienteService.getByCpf já trata a formatação da resposta e retorna ClienteResponseDto | null
+                const cliente = await ClienteService.getByCpf(cleanedCpf);
+                return cliente ? [cliente] : [];
             }
+            // Se o CPF estiver presente mas for inválido, não prossegue para outros filtros e retorna vazio.
+            // Poderia também lançar um erro ou retornar todos, dependendo da UX desejada.
+            console.warn("CPF fornecido para listarPaginadoFiltrado é inválido:", filters.cpf);
+            return [];
         }
 
-        const params = new URLSearchParams({
-            page: page.toString(),
-            size: size.toString(),
-            sort,
-        });
-
-        Object.entries(cleanedFilters).forEach(([key, value]) => {
-            if (value !== undefined) { // Checa se o valor não é undefined após limpeza
-                params.append(key, String(value));
-            }
-        });
-
-        // Esta é a linha que causa o erro se response.data.content for undefined
-        const response = await clienteApiClient.get<SpringPage<any>>('', { params }); // Espera SpringPage
-
-        // Adicionando uma verificação para response.data e response.data.content
-        if (!response.data || !response.data.content || !Array.isArray(response.data.content)) {
-            console.error("Resposta da API inesperada para listarPaginadoFiltrado:", response.data);
-            // Retorna uma estrutura SpringPage vazia ou lança um erro mais específico
-            return {
-                content: [],
-                totalPages: 0,
-                totalElements: 0,
-                number: page,
-                size: size,
-                first: true,
-                last: true,
-                numberOfElements: 0,
-                empty: true,
-                // Adicione outras propriedades de SpringPage com valores padrão
-                pageable: { sort: { empty: true, sorted: false, unsorted: true}, offset: 0, pageNumber:0, pageSize:0, paged: false, unpaged: true},
-                sort:  { empty: true, sorted: false, unsorted: true}
-            };
+        if (filters?.nome) {
+            // ClienteService.searchByName já trata a formatação e retorna ClienteResponseDto[]
+            return ClienteService.searchByName(filters.nome);
         }
 
-        return {
-            ...response.data,
-            content: response.data.content.map(formatClienteResponse),
-        };
+        // Caso padrão: nenhum filtro de CPF ou Nome fornecido (ou filtros vazios/undefined)
+        // Busca todos os clientes.
+        // O endpoint GetAllClientes do C# não suporta outros filtros como dataCadastro ou estadoCivil diretamente.
+        // Se `filters` contiver outros campos (ex: dataCadastro, estadoCivil), eles serão ignorados aqui.
+        console.log("Nenhum filtro de CPF ou Nome válido fornecido, buscando todos os clientes.");
+        const response = await clienteApiClient.get<any[]>(''); // Endpoint base para buscar todos
+        return response.data.map(formatClienteResponse);
     },
 
     getById: async (id: number): Promise<ClienteResponseDto> => {
@@ -247,6 +213,57 @@ export const ClienteService = {
         } catch (error: any) {
             console.error(`Erro ao buscar cliente por nome "${nome}":`, error.response || error);
             throw error; // Relançar para ser tratado pelo chamador
+        }
+    },
+
+    // Métodos para gerenciar associações Cliente-Veículo
+
+    async getVeiculosByClienteId(clienteId: number): Promise<VeiculoResponseDto[]> {
+        try {
+            const response = await clienteApiClient.get<VeiculoResponseDto[]>(`/${clienteId}/veiculos`);
+            // O backend retorna 204 NoContent se não houver veículos,
+            // o que o Axios pode tratar como um erro ou retornar response.data como null/undefined.
+            // Se response.data for null/undefined em caso de 204, retorna array vazio.
+            return response.data || [];
+        } catch (error: any) {
+            console.error(`Erro ao buscar veículos para o cliente ID ${clienteId}:`, error.response || error);
+            if (error.response && error.response.status === 404) { // Cliente não encontrado
+                // Lançar erro específico ou retornar vazio, dependendo da necessidade da UI
+                // Para consistência com o backend que retorna 404 se o cliente não existe, pode ser melhor relançar.
+                throw new Error(`Cliente com ID ${clienteId} não encontrado.`);
+            }
+            if (error.response && error.response.status === 204) { // Nenhum veículo associado
+                return [];
+            }
+            // Relança outros erros para serem tratados pelo chamador
+            throw error;
+        }
+    },
+
+    async associateVeiculosWithCliente(clienteId: number, veiculoIds: number[]): Promise<any> {
+        try {
+            const response = await clienteApiClient.post<any>(`/${clienteId}/veiculos`, veiculoIds);
+            return response.data; // O backend retorna as associações criadas (201) ou existentes (200)
+        } catch (error: any) {
+            console.error(`Erro ao associar veículos ao cliente ID ${clienteId}:`, error.response || error);
+            // Adicionar tratamento mais específico se necessário (ex: IDs de veículos não encontrados)
+            if (error.response && error.response.data && error.response.data.title) {
+                 throw new Error(`Falha ao associar veículos: ${error.response.data.title} - ${error.response.data.detail || JSON.stringify(error.response.data.errors) }`);
+            }
+            throw error;
+        }
+    },
+
+    async dissociateVeiculoFromCliente(clienteId: number, veiculoId: number): Promise<void> {
+        try {
+            await clienteApiClient.delete(`/${clienteId}/veiculos/${veiculoId}`);
+            // Backend retorna 204 No Content em sucesso, então não há dados de resposta.
+        } catch (error: any) {
+            console.error(`Erro ao desassociar veículo ID ${veiculoId} do cliente ID ${clienteId}:`, error.response || error);
+            if (error.response && error.response.status === 404) {
+                throw new Error(`Associação entre Cliente ID ${clienteId} e Veículo ID ${veiculoId} não encontrada.`);
+            }
+            throw error;
         }
     }
 };
