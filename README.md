@@ -1,0 +1,1 @@
+# challenge_2025_1SM_Advanced_Business_Development_with.NET
