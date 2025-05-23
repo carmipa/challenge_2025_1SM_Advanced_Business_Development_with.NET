@@ -130,46 +130,51 @@ builder.Services.AddSwaggerGen(c =>
 // Cria a aplicação Web.
 var app = builder.Build();
 
-// Middleware para logar informações de CORS (ajustado para evitar warning CS8604)
-app.Use(async (context, next) =>
+// Middleware para logar informações de CORS, restrito ao ambiente de Desenvolvimento.
+if (app.Environment.IsDevelopment())
 {
-    var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
-    var request = context.Request; // Armazena a requisição para usar no OnStarting
-    logger.LogInformation(1, "==================================================="); // EventId = 1 (exemplo)
-    logger.LogInformation(2, "CORS DEBUG: Entrando no middleware de log CORS.");
-    logger.LogInformation(3, "CORS DEBUG: Requisição: {Method} {Path}", request.Method, request.Path);
-    logger.LogInformation(4, "CORS DEBUG: Origem da Requisição: {Origin}", request.Headers["Origin"].ToString() ?? "(não presente)");
+    app.Use(async (context, next) =>
+    {
+        var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
+        var request = context.Request; // Armazena a requisição para usar no OnStarting
+        logger.LogInformation(1, "==================================================="); // EventId = 1 (exemplo)
+        logger.LogInformation(2, "CORS DEBUG: Entrando no middleware de log CORS.");
+        logger.LogInformation(3, "CORS DEBUG: Requisição: {Method} {Path}", request.Method, request.Path);
+        logger.LogInformation(4, "CORS DEBUG: Origem da Requisição: {Origin}", request.Headers["Origin"].ToString() ?? "(não presente)");
 
-    context.Response.OnStarting(() => {
-        logger.LogInformation(5, "CORS DEBUG: Cabeçalhos da Resposta sendo enviados para {Path}:", request.Path);
-        foreach (var header in context.Response.Headers)
-        {
-            if (header.Key.StartsWith("Access-Control-", StringComparison.OrdinalIgnoreCase) ||
-                header.Key.Equals("Vary", StringComparison.OrdinalIgnoreCase))
+        context.Response.OnStarting(() => {
+            logger.LogInformation(5, "CORS DEBUG: Cabeçalhos da Resposta sendo enviados para {Path}:", request.Path);
+            foreach (var header in context.Response.Headers)
             {
-                logger.LogInformation(6, "CORS DEBUG: Response Header: {Key}: {Value}", header.Key, header.Value.ToString() ?? "(null ou vazio)");
+                if (header.Key.StartsWith("Access-Control-", StringComparison.OrdinalIgnoreCase) ||
+                    header.Key.Equals("Vary", StringComparison.OrdinalIgnoreCase))
+                {
+                    logger.LogInformation(6, "CORS DEBUG: Response Header: {Key}: {Value}", header.Key, header.Value.ToString() ?? "(null ou vazio)");
+                }
             }
-        }
-        logger.LogInformation(7, "===================================================");
-        return Task.CompletedTask;
+            logger.LogInformation(7, "===================================================");
+            return Task.CompletedTask;
+        });
+        await next.Invoke();
     });
-    await next.Invoke();
-});
+}
 
 app.UseHttpLogging();
 
 // Configura o pipeline de requisições HTTP.
-if (app.Environment.IsDevelopment() || app.Environment.IsStaging() || app.Environment.IsProduction())
+// Swagger UI é disponibilizado apenas em ambiente de Desenvolvimento.
+if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "Challenge Muttu API v1");
-        c.RoutePrefix = "swagger";
+        c.RoutePrefix = "swagger"; // Define o prefixo da rota para acessar o Swagger UI.
     });
 }
 
-// app.UseHttpsRedirection(); // Mantenha comentado se o HTTPS não estiver totalmente configurado e testado
+// Enable HTTPS redirection. Ensure an SSL certificate is configured for the app and Kestrel/IIS is listening on HTTPS ports.
+app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 app.UseRouting();

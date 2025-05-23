@@ -53,10 +53,10 @@ namespace ChallengeMuttuApi.Model
             get => _sexo;
             set
             {
-                // DDL CHECK (SEXO IN ('M', 'H', 'MH')) [cite: 43]
-                // O frontend envia 'M' ou 'F'. Ajuste se 'H' ou 'MH' forem cenários válidos.
+                // Valida e armazena o sexo. Aceita 'M' (Masculino), 'F' (Feminino), 
+                // 'H' (Outro/Não especificado), ou 'MH'.
                 string upperValue = value?.ToUpperInvariant() ?? string.Empty;
-                if (upperValue == "M" || upperValue == "F" || upperValue == "H" || upperValue == "MH") // Incluindo MH conforme DDL
+                if (upperValue == "M" || upperValue == "F" || upperValue == "H" || upperValue == "MH")
                     _sexo = upperValue;
                 else
                     throw new ArgumentException("Sexo inválido! Use 'M' (Masculino), 'F' (Feminino), 'H' (Outro/Não especificado) ou 'MH'.", nameof(Sexo));
@@ -69,7 +69,7 @@ namespace ChallengeMuttuApi.Model
         public required string Nome { get; set; }
 
         [Column("SOBRENOME")]
-        [Required(ErrorMessage = "O Sobrenome é obrigatório.")] // Adicionado Required baseado no DDL NOT NULL [cite: 5]
+        [Required(ErrorMessage = "O Sobrenome é obrigatório.")]
         [StringLength(100, ErrorMessage = "O Sobrenome deve ter no máximo 100 caracteres.")]
         public string Sobrenome { get; set; } // Inicializado no construtor
 
@@ -85,9 +85,10 @@ namespace ChallengeMuttuApi.Model
             get => _cpf;
             set
             {
-                // Limpa qualquer formatação (pontos, traços) antes de validar e armazenar
+                // Limpa qualquer formatação (pontos, traços) antes de validar e armazenar.
+                // Espera-se 11 dígitos numéricos.
                 var cleanedValue = new string((value ?? string.Empty).Where(char.IsDigit).ToArray());
-                if (cleanedValue.Length == 11) // Não precisa mais do .All(char.IsDigit) pois já filtramos
+                if (cleanedValue.Length == 11)
                     _cpf = cleanedValue;
                 else
                     throw new ArgumentException("CPF inválido! Deve conter 11 dígitos numéricos após remoção de formatação.", nameof(Cpf));
@@ -95,24 +96,23 @@ namespace ChallengeMuttuApi.Model
         }
 
         [Column("PROFISSAO")]
-        [Required(ErrorMessage = "A Profissão é obrigatória.")] // Adicionado Required baseado no DDL NOT NULL [cite: 5]
+        [Required(ErrorMessage = "A Profissão é obrigatória.")]
         [StringLength(50, ErrorMessage = "A Profissão deve ter no máximo 50 caracteres.")]
         public string Profissao { get; set; } // Inicializado no construtor
 
         [Column("ESTADO_CIVIL")]
         [Required(ErrorMessage = "O Estado Civil é obrigatório.")]
-        [StringLength(50)] // O EnumDataType já valida os valores, mas StringLength pode ser mantido
-        // [EnumDataType(typeof(EstadoCivil), ErrorMessage = "Estado civil inválido!")] // Esta validação é boa para model binding
-        public EstadoCivil EstadoCivil // A conversão para string é feita no AppDbContext
+        [StringLength(50)] 
+        // A conversão para string é feita no AppDbContext.
+        // O EnumDataType pode ser usado para validação no model binding, mas a validação principal ocorre no setter.
+        public EstadoCivil EstadoCivil 
         {
             get => _estadoCivil;
             set
             {
-                // A validação com Enum.IsDefined é boa se o tipo no banco for NUMBER e mapeado para int no C#.
-                // Como está mapeado para string no banco (VARCHAR2(50 CHAR)) e a conversão é feita no AppDbContext,
-                // o setter aqui pode apenas atribuir, confiando na conversão e na constraint do banco.
-                // No entanto, para consistência com seu código original, manteremos a validação.
-                if (!Enum.IsDefined(typeof(EstadoCivil), value)) // DDL CK_CLIENTE_ESTADO_CIVIL valida os valores string [cite: 44]
+                // Valida se o valor fornecido é um membro válido do enum EstadoCivil.
+                // A conversão para string para armazenamento no banco é configurada no AppDbContext.
+                if (!Enum.IsDefined(typeof(EstadoCivil), value))
                     throw new ArgumentException("Estado civil inválido!", nameof(EstadoCivil));
                 _estadoCivil = value;
             }

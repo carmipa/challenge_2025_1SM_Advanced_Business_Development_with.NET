@@ -18,81 +18,81 @@ namespace ChallengeMuttuApi.Data
         /// <param name="options">Opções de configuração do DbContext.</param>
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
-        // 🔹 Todos os DbSets para suas tabelas principais
+        // DbSets para as entidades principais da aplicação.
 
         /// <summary>
-        /// Tabela dos boxex de entrada e saida dos conteiner. (Comentário baseado na sua imagem de erro)
+        /// Representa a coleção de Boxes (contêineres ou locais de armazenamento) no banco de dados.
         /// </summary>
         public DbSet<Box> Boxes { get; set; }
         /// <summary>
-        /// Representa a coleção de Clientes no banco de dados. (Substitua pelo seu comentário original se diferente)
+        /// Representa a coleção de Clientes no banco de dados.
         /// </summary>
         public DbSet<Cliente> Clientes { get; set; }
         /// <summary>
-        /// Representa a coleção de Contatos no banco de dados. (Substitua pelo seu comentário original se diferente)
+        /// Representa a coleção de Contatos (informações de contato) no banco de dados.
         /// </summary>
         public DbSet<Contato> Contatos { get; set; }
         /// <summary>
-        /// Representa a coleção de Endereços no banco de dados. (Substitua pelo seu comentário original se diferente)
+        /// Representa a coleção de Endereços no banco de dados.
         /// </summary>
         public DbSet<Endereco> Enderecos { get; set; }
         /// <summary>
-        /// Representa a coleção de Pátios no banco de dados. (Substitua pelo seu comentário original se diferente)
+        /// Representa a coleção de Pátios (áreas de armazenamento ou operação) no banco de dados.
         /// </summary>
         public DbSet<Patio> Patios { get; set; }
         /// <summary>
-        /// Representa a coleção de Rastreamentos no banco de dados. (Substitua pelo seu comentário original se diferente)
+        /// Representa a coleção de Rastreamentos (informações de localização ou status) no banco de dados.
         /// </summary>
         public DbSet<Rastreamento> Rastreamentos { get; set; }
         /// <summary>
-        /// Representa a coleção de Veículos no banco de dados. (Substitua pelo seu comentário original se diferente)
+        /// Representa a coleção de Veículos no banco de dados.
         /// </summary>
         public DbSet<Veiculo> Veiculos { get; set; }
         /// <summary>
-        /// Representa a coleção de Zonas no banco de dados. (Substitua pelo seu comentário original se diferente)
+        /// Representa a coleção de Zonas (setores ou divisões de pátios) no banco de dados.
         /// </summary>
         public DbSet<Zona> Zonas { get; set; }
 
-        // 🔹 DbSets para suas tabelas de ligação (models que representam as tabelas de junção)
+        // DbSets para as tabelas de ligação (entidades que modelam relacionamentos muitos-para-muitos).
 
         /// <summary>
-        /// Representa a coleção de ligações entre Clientes e Veículos. (Substitua pelo seu comentário original se diferente)
+        /// Representa a tabela de ligação entre Clientes e Veículos.
         /// </summary>
         public DbSet<ClienteVeiculo> ClienteVeiculos { get; set; }
         /// <summary>
-        /// Representa a coleção de ligações entre Contatos e Pátios. (Substitua pelo seu comentário original se diferente)
+        /// Representa a tabela de ligação entre Contatos e Pátios.
         /// </summary>
         public DbSet<ContatoPatio> ContatoPatios { get; set; }
         /// <summary>
-        /// Representa a coleção de ligações entre Endereços e Pátios. (Substitua pelo seu comentário original se diferente)
+        /// Representa a tabela de ligação entre Endereços e Pátios.
         /// </summary>
         public DbSet<EnderecoPatio> EnderecoPatios { get; set; }
         /// <summary>
-        /// Representa a coleção de ligações entre Pátios e Boxes. (Substitua pelo seu comentário original se diferente)
+        /// Representa a tabela de ligação entre Pátios e Boxes.
         /// </summary>
         public DbSet<PatioBox> PatioBoxes { get; set; }
         /// <summary>
-        /// Representa a coleção de ligações entre Veículos e Boxes. (Substitua pelo seu comentário original se diferente)
+        /// Representa a tabela de ligação entre Veículos e Boxes.
         /// </summary>
         public DbSet<VeiculoBox> VeiculoBoxes { get; set; }
         /// <summary>
-        /// Representa a coleção de ligações entre Veículos e Pátios. (Substitua pelo seu comentário original se diferente)
+        /// Representa a tabela de ligação entre Veículos e Pátios.
         /// </summary>
         public DbSet<VeiculoPatio> VeiculoPatios { get; set; }
         /// <summary>
-        /// Representa a coleção de ligações entre Veículos e Rastreamentos. (Substitua pelo seu comentário original se diferente)
+        /// Representa a tabela de ligação entre Veículos e Rastreamentos.
         /// </summary>
         public DbSet<VeiculoRastreamento> VeiculoRastreamentos { get; set; }
         /// <summary>
-        /// Representa a coleção de ligações entre Veículos e Zonas. (Substitua pelo seu comentário original se diferente)
+        /// Representa a tabela de ligação entre Veículos e Zonas.
         /// </summary>
         public DbSet<VeiculoZona> VeiculoZonas { get; set; }
         /// <summary>
-        /// Representa a coleção de ligações entre Zonas e Boxes. (Substitua pelo seu comentário original se diferente)
+        /// Representa a tabela de ligação entre Zonas e Boxes.
         /// </summary>
         public DbSet<ZonaBox> ZonaBoxes { get; set; }
         /// <summary>
-        /// Representa a coleção de ligações entre Zonas e Pátios. (Substitua pelo seu comentário original se diferente)
+        /// Representa a tabela de ligação entre Zonas e Pátios.
         /// </summary>
         public DbSet<ZonaPatio> ZonaPatios { get; set; }
 
@@ -106,20 +106,15 @@ namespace ChallengeMuttuApi.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            // 🔹 Configuração de Chaves Compostas para Tabelas de Ligação
-            // Os comentários XML internos no OnModelCreating não são padrão e podem ser removidos se não desejados.
-            // Se mantidos, precisam estar corretamente posicionados para não causar CS1587.
-            // Para esta correção, vou remover os comentários XML internos do OnModelCreating,
-            // pois o erro CS1587 geralmente se aplica a membros de classe como propriedades (DbSet).
-
+            // Configuração das chaves primárias compostas para as tabelas de ligação (muitos-para-muitos).
+            // A entidade ClienteVeiculo utiliza uma chave composta pelos IDs de Cliente e Veículo.
             modelBuilder.Entity<ClienteVeiculo>()
                 .HasKey(cv => new {
                     cv.TbClienteIdCliente,
-                    cv.TbClienteTbEnderecoIdEndereco,
-                    cv.TbClienteTbContatoIdContato,
                     cv.TbVeiculoIdVeiculo
                 });
 
+            // Configuração dos relacionamentos para ClienteVeiculo.
             modelBuilder.Entity<ClienteVeiculo>()
                 .HasOne(cv => cv.Cliente)
                 .WithMany(c => c.ClienteVeiculos)
@@ -130,6 +125,7 @@ namespace ChallengeMuttuApi.Data
                 .WithMany(v => v.ClienteVeiculos)
                 .HasForeignKey(cv => cv.TbVeiculoIdVeiculo);
 
+            // Configurações para ContatoPatio
             modelBuilder.Entity<ContatoPatio>()
                 .HasKey(cp => new { cp.TbPatioIdPatio, cp.TbContatoIdContato });
             modelBuilder.Entity<ContatoPatio>()
@@ -141,6 +137,7 @@ namespace ChallengeMuttuApi.Data
                 .WithMany(c => c.ContatoPatios)
                 .HasForeignKey(cp => cp.TbContatoIdContato);
 
+            // Configurações para EnderecoPatio
             modelBuilder.Entity<EnderecoPatio>()
                 .HasKey(ep => new { ep.TbEnderecoIdEndereco, ep.TbPatioIdPatio });
             modelBuilder.Entity<EnderecoPatio>()
@@ -152,6 +149,7 @@ namespace ChallengeMuttuApi.Data
                 .WithMany(p => p.EnderecoPatios)
                 .HasForeignKey(ep => ep.TbPatioIdPatio);
 
+            // Configurações para PatioBox
             modelBuilder.Entity<PatioBox>()
                 .HasKey(pb => new { pb.TbPatioIdPatio, pb.TbBoxIdBox });
             modelBuilder.Entity<PatioBox>()
@@ -163,6 +161,7 @@ namespace ChallengeMuttuApi.Data
                 .WithMany(b => b.PatioBoxes)
                 .HasForeignKey(pb => pb.TbBoxIdBox);
 
+            // Configurações para VeiculoBox
             modelBuilder.Entity<VeiculoBox>()
                 .HasKey(vb => new { vb.TbVeiculoIdVeiculo, vb.TbBoxIdBox });
             modelBuilder.Entity<VeiculoBox>()
@@ -174,6 +173,7 @@ namespace ChallengeMuttuApi.Data
                 .WithMany(b => b.VeiculoBoxes)
                 .HasForeignKey(vb => vb.TbBoxIdBox);
 
+            // Configurações para VeiculoPatio
             modelBuilder.Entity<VeiculoPatio>()
                 .HasKey(vp => new { vp.TbVeiculoIdVeiculo, vp.TbPatioIdPatio });
             modelBuilder.Entity<VeiculoPatio>()
@@ -185,6 +185,7 @@ namespace ChallengeMuttuApi.Data
                 .WithMany(p => p.VeiculoPatios)
                 .HasForeignKey(vp => vp.TbPatioIdPatio);
 
+            // Configurações para VeiculoRastreamento
             modelBuilder.Entity<VeiculoRastreamento>()
                 .HasKey(vr => new { vr.TbVeiculoIdVeiculo, vr.TbRastreamentoIdRastreamento });
             modelBuilder.Entity<VeiculoRastreamento>()
@@ -196,6 +197,7 @@ namespace ChallengeMuttuApi.Data
                 .WithMany(r => r.VeiculoRastreamentos)
                 .HasForeignKey(vr => vr.TbRastreamentoIdRastreamento);
 
+            // Configurações para VeiculoZona
             modelBuilder.Entity<VeiculoZona>()
                 .HasKey(vz => new { vz.TbVeiculoIdVeiculo, vz.TbZonaIdZona });
             modelBuilder.Entity<VeiculoZona>()
@@ -207,6 +209,7 @@ namespace ChallengeMuttuApi.Data
                 .WithMany(z => z.VeiculoZonas)
                 .HasForeignKey(vz => vz.TbZonaIdZona);
 
+            // Configurações para ZonaBox
             modelBuilder.Entity<ZonaBox>()
                 .HasKey(zb => new { zb.TbZonaIdZona, zb.TbBoxIdBox });
             modelBuilder.Entity<ZonaBox>()
@@ -218,6 +221,7 @@ namespace ChallengeMuttuApi.Data
                 .WithMany(b => b.ZonaBoxes)
                 .HasForeignKey(zb => zb.TbBoxIdBox);
 
+            // Configurações para ZonaPatio
             modelBuilder.Entity<ZonaPatio>()
                 .HasKey(zp => new { zp.TbPatioIdPatio, zp.TbZonaIdZona });
             modelBuilder.Entity<ZonaPatio>()
@@ -229,7 +233,7 @@ namespace ChallengeMuttuApi.Data
                 .WithMany(z => z.ZonaPatios)
                 .HasForeignKey(zp => zp.TbZonaIdZona);
 
-            // 🔹 Configuração de Índices Únicos usando Fluent API
+            // Configuração de Índices Únicos.
             modelBuilder.Entity<Cliente>()
                 .HasIndex(c => c.Cpf)
                 .IsUnique();
@@ -244,7 +248,7 @@ namespace ChallengeMuttuApi.Data
                 .HasIndex(v => v.Chassi)
                 .IsUnique();
 
-            // 🔹 Configurações adicionais de mapeamento
+            // Configurações adicionais de mapeamento de propriedades e conversões.
             modelBuilder.Entity<Cliente>()
                 .Property(c => c.EstadoCivil)
                 .HasConversion<string>();
