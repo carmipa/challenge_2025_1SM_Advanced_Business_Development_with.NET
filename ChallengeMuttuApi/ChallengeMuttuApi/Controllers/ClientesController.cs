@@ -392,5 +392,188 @@ namespace ChallengeMuttuApi.Controllers
                 return StatusCode(500, "Erro interno do servidor ao excluir cliente. Verifique os logs.");
             }
         }
+
+        // POST: api/clientes/{clienteId}/veiculos
+        /// <summary>
+        /// Associa um ou mais veículos a um cliente específico.
+        /// </summary>
+        /// <param name="clienteId">O ID do cliente.</param>
+        /// <param name="veiculoIds">Uma lista de IDs de veículos a serem associados.</param>
+        /// <returns>Retorna 201 Created se novas associações foram feitas, 200 OK se todas as associações solicitadas já existiam,
+        /// 400 Bad Request para dados inválidos, 404 Not Found se o cliente ou algum veículo não for encontrado,
+        /// ou 500 Internal Server Error em caso de erro interno.</returns>
+        [HttpPost("{clienteId:int}/veiculos")]
+        [ProducesResponseType(typeof(IEnumerable<ClienteVeiculo>), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(IEnumerable<ClienteVeiculo>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> AssociateVeiculosWithCliente(int clienteId, [FromBody] List<int> veiculoIds)
+        {
+            if (veiculoIds == null || !veiculoIds.Any())
+            {
+                return BadRequest(new ValidationProblemDetails(new Dictionary<string, string[]>
+                {
+                    { "veiculoIds", new[] { "A lista de IDs de veículos não pode ser vazia." } }
+                }));
+            }
+
+            try
+            {
+                var cliente = await _context.Clientes.FindAsync(clienteId);
+                if (cliente == null)
+                {
+                    return NotFound($"Cliente com ID {clienteId} não encontrado.");
+                }
+
+                var createdAssociations = new List<ClienteVeiculo>();
+                var existingAssociations = new List<ClienteVeiculo>();
+                var notFoundVeiculoIds = new List<int>();
+
+                foreach (var veiculoId in veiculoIds.Distinct()) // Processar IDs distintos para evitar duplicidade na requisição
+                {
+                    var veiculo = await _context.Veiculos.FindAsync(veiculoId);
+                    if (veiculo == null)
+                    {
+                        notFoundVeiculoIds.Add(veiculoId);
+                        continue; // Coleta todos os veículos não encontrados antes de retornar
+                    }
+
+                    var existingAssociation = await _context.ClienteVeiculos
+                        .FirstOrDefaultAsync(cv => cv.TbClienteIdCliente == clienteId && cv.TbVeiculoIdVeiculo == veiculoId);
+
+                    if (existingAssociation != null)
+                    {
+                        existingAssociations.Add(existingAssociation);
+                    }
+                    else
+                    {
+                        var newAssociation = new ClienteVeiculo
+                        {
+                            TbClienteIdCliente = clienteId,
+                            TbVeiculoIdVeiculo = veiculoId
+                        };
+                        _context.ClienteVeiculos.Add(newAssociation);
+                        createdAssociations.Add(newAssociation);
+                    }
+                }
+
+                if (notFoundVeiculoIds.Any())
+                {
+                    return BadRequest($"Os seguintes IDs de veículos não foram encontrados: {string.Join(", ", notFoundVeiculoIds)}.");
+                }
+
+                if (createdAssociations.Any())
+                {
+                    await _context.SaveChangesAsync();
+                    // Retorna todas as associações, incluindo as que já existiam e as novas.
+                    // Ou poderia retornar apenas as `createdAssociations` com status 201.
+                    // Para este caso, retornaremos as novas associações com 201 se alguma foi criada.
+                    return CreatedAtAction(nameof(GetVeiculosForCliente), new { clienteId = clienteId }, createdAssociations);
+                }
+
+                // Se nenhuma nova associação foi criada (todas já existiam)
+                return Ok(existingAssociations);
+            }
+            catch (DbUpdateException dbEx)
+            {
+                LogDetailedException($"Erro de banco de dados ao associar veículos ao cliente ID {clienteId}", dbEx);
+                return StatusCode(500, "Erro ao persistir associações no banco de dados.");
+            }
+            catch (Exception ex)
+            {
+                LogDetailedException($"Erro inesperado ao associar veículos ao cliente ID {clienteId}", ex);
+                return StatusCode(500, "Erro interno do servidor ao associar veículos.");
+            }
+        }
+
+        // GET: api/clientes/{clienteId}/veiculos
+        /// <summary>
+        /// Obtém todos os veículos associados a um cliente específico.
+        /// </summary>
+        /// <param name="clienteId">O ID do cliente.</param>
+        /// <returns>Uma lista de veículos associados ou 204 NoContent se nenhum veículo estiver associado.
+        /// Retorna 404 NotFound se o cliente não for encontrado.</returns>
+        [HttpGet("{clienteId:int}/veiculos")]
+        [ProducesResponseType(typeof(IEnumerable<Veiculo>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<IEnumerable<Veiculo>>> GetVeiculosForCliente(int clienteId)
+        {
+            try
+            {
+                var clienteExists = await _context.Clientes.AnyAsync(c => c.IdCliente == clienteId);
+                if (!clienteExists)
+                {
+                    return NotFound($"Cliente com ID {clienteId} não encontrado.");
+                }
+
+                var veiculos = await _context.ClienteVeiculos
+                                          .Where(cv => cv.TbClienteIdCliente == clienteId)
+                                          .Select(cv => cv.Veiculo) // Assume que a propriedade de navegação Veiculo está configurada
+                                          .ToListAsync();
+
+                if (veiculos == null || !veiculos.Any() || veiculos.All(v => v == null)) // Adicionada verificação para veiculos.All(v => v == null) por segurança
+                {
+                    return NoContent();
+                }
+                
+                // Filtra para remover quaisquer nulos que possam ter surgido de um Select mal configurado ou dados inconsistentes
+                var resultVeiculos = veiculos.Where(v => v != null).ToList();
+                if (!resultVeiculos.Any())
+                {
+                     return NoContent();
+                }
+
+                return Ok(resultVeiculos);
+            }
+            catch (Exception ex)
+            {
+                LogDetailedException($"Erro ao buscar veículos para o cliente ID {clienteId}", ex);
+                return StatusCode(500, "Erro interno do servidor ao buscar veículos do cliente.");
+            }
+        }
+
+        // DELETE: api/clientes/{clienteId}/veiculos/{veiculoId}
+        /// <summary>
+        /// Desassocia um veículo específico de um cliente.
+        /// </summary>
+        /// <param name="clienteId">O ID do cliente.</param>
+        /// <param name="veiculoId">O ID do veículo a ser desassociado.</param>
+        /// <returns>204 NoContent em caso de sucesso, 404 NotFound se a associação não for encontrada,
+        /// ou 500 Internal Server Error em caso de erro interno.</returns>
+        [HttpDelete("{clienteId:int}/veiculos/{veiculoId:int}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> DissociateVeiculoFromCliente(int clienteId, int veiculoId)
+        {
+            try
+            {
+                var clienteVeiculoEntry = await _context.ClienteVeiculos
+                    .FirstOrDefaultAsync(cv => cv.TbClienteIdCliente == clienteId && cv.TbVeiculoIdVeiculo == veiculoId);
+
+                if (clienteVeiculoEntry == null)
+                {
+                    return NotFound($"Associação entre Cliente ID {clienteId} e Veículo ID {veiculoId} não encontrada.");
+                }
+
+                _context.ClienteVeiculos.Remove(clienteVeiculoEntry);
+                await _context.SaveChangesAsync();
+
+                return NoContent();
+            }
+            catch (DbUpdateException dbEx)
+            {
+                LogDetailedException($"Erro de banco de dados ao desassociar veículo ID {veiculoId} do cliente ID {clienteId}", dbEx);
+                return StatusCode(500, "Erro ao remover associação do banco de dados.");
+            }
+            catch (Exception ex)
+            {
+                LogDetailedException($"Erro inesperado ao desassociar veículo ID {veiculoId} do cliente ID {clienteId}", ex);
+                return StatusCode(500, "Erro interno do servidor ao desassociar veículo.");
+            }
+        }
     }
 }
